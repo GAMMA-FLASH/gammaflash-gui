@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<graphs>
+   <graph name="histo_gamma_flash" type="histogram" datatype="" field ="y_distribution" />
+   <graph name="curve_gamma_flash" type="line" datatype="" field ="" />
+</graphs>
