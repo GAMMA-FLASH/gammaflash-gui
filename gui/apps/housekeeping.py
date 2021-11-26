@@ -205,11 +205,7 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
             "margin-bottom": "50px"
         }),
 
-    html.Div(id="buttons", className="btn-toolbar justify-content-center", children=[
-        html.Button('START', className="btn btn-success mr-3", id='btn-nclicks-1', n_clicks=0),
-        dcc.Input(id='input-on-submit', type='text', className="mr-3", size="5"),
-        html.Button('STOP', className="btn btn-danger ", id='btn-nclicks-2', n_clicks=0)
-    ]),
+  
 
 
     html.Div(id="view1", children=div_children),
@@ -218,7 +214,13 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 
 
 ])
-
+"""
+  html.Div(id="buttons", className="btn-toolbar justify-content-center", children=[
+        html.Button('START', className="btn btn-success mr-3", id='btn-nclicks-1', n_clicks=0),
+        dcc.Input(id='input-on-submit', type='text', className="mr-3", size="5"),
+        html.Button('STOP', className="btn btn-danger ", id='btn-nclicks-2', n_clicks=0)
+    ]),
+"""
 
 ################---CALLBACKS---##############
 @app.callback(

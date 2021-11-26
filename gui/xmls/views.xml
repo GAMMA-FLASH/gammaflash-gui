@@ -5,23 +5,11 @@
   <row id="row2">
   	
 	<col id="col2_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="histogram2" name="histo_gamma_flash" interval="5" redpitayaID="1"/>
+            <graph id="histogram2" name="histo_gamma_flash" interval="5" redpitayaID="0"/>
         </col>
 
     <col id="col2_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="line2" name="curve_gamma_flash" interval="5" redpitayaID="1"/>
-        </col>
-
-</row>
-
-<row id="row3">
-  	
-	<col id="col3_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="histogram3" name="histo_gamma_flash" interval="5" redpitayaID="4"/>
-        </col>
-
-    <col id="col3_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="line3" name="curve_gamma_flash" interval="5" redpitayaID="4"/>
+            <graph id="line2" name="curve_gamma_flash" interval="5" redpitayaID="0"/>
         </col>
 
 </row>

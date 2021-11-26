@@ -247,7 +247,7 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     html.Div(children=[
 
     html.Nav(id="navbar", className="navbar fixed-top navbar-expand-lg", children=[
-        html.A("View1", className="nav-link", href="/apps/home"),
+        html.A("Home", className="nav-link", href="/apps/home"),
         html.A("Housekeeping", className="nav-link", href="/apps/housekeeping"),
         ], style={
                 'backgroundColor': colors['navbar']
@@ -255,12 +255,6 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     ], style={
             "margin-bottom": "50px"
         }),
-
-    html.Div(id="buttons", className="btn-toolbar justify-content-center", children=[
-        html.Button('START', className="btn btn-success mr-3", id='btn-nclicks-1', n_clicks=0),
-        dcc.Input(id='input-on-submit', type='text', className="mr-3", size="5"),
-        html.Button('STOP', className="btn btn-danger ", id='btn-nclicks-2', n_clicks=0)
-    ]),
 
 
     html.Div(id="view1", children=div_children),
@@ -270,6 +264,13 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 
 ])
 
+"""
+    html.Div(id="buttons", className="btn-toolbar justify-content-center", children=[
+        html.Button('START', className="btn btn-success mr-3", id='btn-nclicks-1', n_clicks=0),
+        dcc.Input(id='input-on-submit', type='text', className="mr-3", size="5"),
+        html.Button('STOP', className="btn btn-danger ", id='btn-nclicks-2', n_clicks=0)
+    ]),
+"""
 
 ################---CALLBACKS---##############
 @app.callback(
@@ -279,6 +280,6 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     )
 def update_bars(n, figure):
     data = load_data()
-    y_distribution = data[4]["y_distribution"]
+    y_distribution = data[0]["y_distribution"]
     figure["data"][0]["y"] = y_distribution
     return figure
