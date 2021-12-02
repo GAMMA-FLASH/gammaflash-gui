@@ -102,8 +102,15 @@ def load_data():
     cursor.execute("select * from gftable")
     results = cursor.fetchall()
 
+    cursor.execute(f"SELECT waveform FROM gammaflash_test.waveform_dl1 where RedpitayaID=1;")
+    resultswf = cursor.fetchall()
+
     cursor.close()
     conn.close()
+
+    data_json = json.loads(resultswf[0]["waveform"])
+
+
     d = {}
     for r in results:
         key = r["RedpitayaID"]
@@ -111,23 +118,22 @@ def load_data():
 
         d[key] = r["Bars"]
 
+    return d, data_json
+"""
+def load_data_wf():
 
-    print(d[0])
+    conn = pymysql.connect(host=conf_dict["db_host"], user=conf_dict["db_user"], password=conf_dict["db_pass"], db=conf_dict["db_results"],port=int(conf_dict["db_port"]), cursorclass=pymysql.cursors.DictCursor)
+    cursor = conn.cursor()
+    query = f"SELECT waveform FROM gammaflash_test.waveform_dl1 where RedpitayaID=1;"
+    cursor.execute(query)
+    results = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
+    data_json = json.loads(results[0]["waveform"])
 
-    #print(type(results["Bars"][0]))
-
-
-    """
-    data = np.load("/home/antonio/Desktop/DAM_v1.0/yhist.npy")
-
-    df = pd.DataFrame({
-    "Amplitude [mV]": np.arange(1000),
-    "Counts": data,
-    })
-    """
-
-    return d
+    return(data_json)
+"""
 
 def load_view(mysql=True):
 
@@ -207,12 +213,14 @@ def start_view(rows, data):
         for j in i["row_columns"]:
             if j["graph_type"] == "histogram":
                 #plot = 0
-                plot = bar_plot(index=j["redpitayaID"], name=j["graph_name"], className=j["col_class"], y=data[int(j["redpitayaID"])]["y_distribution"])
+                plot = bar_plot(index=j["redpitayaID"], name=j["graph_name"], className=j["col_class"], y=np.zeros((1000,), dtype=int))
                 interval = dcc.Interval(id={"type":"interval","index":j["redpitayaID"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
                 intervals.append(interval)
 
             if j["graph_type"] == "line":
-                plot = line_plot(index=j["redpitayaID"], name=j["graph_name"], className=j["col_class"], y=np.random.exponential(size=300))
+                plot = line_plot(index=j["redpitayaID"], name=j["graph_name"], className=j["col_class"], y=0)
+                #interval = dcc.Interval(id={"type":"interval-line","index":j["redpitayaID"]+"_line"}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
+                #intervals.append(interval)
             count += 1
             row_plot.append(plot)
 
@@ -256,7 +264,6 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
             "margin-bottom": "50px"
         }),
 
-
     html.Div(id="view1", children=div_children),
 
     html.Div(id="interval_container", children=intervals)
@@ -275,11 +282,17 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 ################---CALLBACKS---##############
 @app.callback(
     Output({"type":"bar", "index": MATCH}, "figure"),
+    Output({"type":"line", "index": MATCH}, "figure"),
     [Input({"type":"interval",'index': MATCH}, 'n_intervals')],
-    [State({'type': 'bar', 'index': MATCH}, 'figure')]
+    [State({'type': 'bar', 'index': MATCH}, 'figure'),
+    State({'type': 'line', 'index': MATCH}, 'figure')]
     )
-def update_bars(n, figure):
-    data = load_data()
+def update_bars(n, figure_bar, figure_line):
+    data, datawf = load_data()
+
+    figure_line["data"][0]["x"] = datawf["x"]
+    figure_line["data"][0]["y"] = datawf["y"]
+
     y_distribution = data[0]["y_distribution"]
-    figure["data"][0]["y"] = y_distribution
-    return figure
+    figure_bar["data"][0]["y"] = y_distribution
+    return figure_bar, figure_line

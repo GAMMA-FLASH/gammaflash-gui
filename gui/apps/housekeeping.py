@@ -43,7 +43,7 @@ colors = {
 
 def line_plot(index, name, className, x, y):
     return dcc.Graph(
-        id={"type":"line","index":str(index)},
+        id={"type":"line_temp","index":str(index)},
         className=className,
         figure= {
             'data': [dict(
@@ -166,8 +166,8 @@ def start_view(rows, data):
                 intervals.append(interval)
 
             if j["graph_type"] == "line":
-                plot = line_plot(index=j["redpitayaID"], name=j["graph_name"], className=j["col_class"], x=data["Timestamp"], y=data["Temp"])
-                interval = dcc.Interval(id={"type":"interval","index":j["redpitayaID"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
+                plot = line_plot(index=j["redpitayaID"]+"_temp", name=j["graph_name"], className=j["col_class"], x=data["Timestamp"], y=data["Temp"])
+                interval = dcc.Interval(id={"type":"interval","index":j["redpitayaID"]+"_temp"}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
                 intervals.append(interval)
             count += 1
             row_plot.append(plot)
@@ -223,10 +223,11 @@ layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 """
 
 ################---CALLBACKS---##############
+
 @app.callback(
-    Output({"type":"line", "index": MATCH}, "figure"),
+    Output({"type":"line_temp", "index": MATCH}, "figure"),
     [Input({"type":"interval",'index': MATCH}, 'n_intervals')],
-    [State({'type': 'line', 'index': MATCH}, 'figure')]
+    [State({'type': 'line_temp', 'index': MATCH}, 'figure')]
     )
 def update_temp(n, figure):
     data = load_data()
