@@ -6,4 +6,7 @@
 
    <graphtype name="line" />
 
+   <graphtype name="image" />
+
+   <graphtype name="image-json" />
 </graphtypes>

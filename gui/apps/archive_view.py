@@ -1,23 +1,20 @@
-import os
-import glob
-import json
 import dash
-import numpy as np
-from skimage import io
-from pathlib import Path
-from app import app
-import pandas as pd
 from dash import dcc
-from dash import html
-import pymysql.cursors
-from operator import add
-import plotly.express as px
-import plotly.graph_objects as go
-import xml.etree.ElementTree as ET
-import dash_bootstrap_components as dbc
-from datetime import datetime, timedelta, timezone
 from dash.dependencies import Input, Output, State, MATCH, ALL
+import json
+import os
+from datetime import datetime, timedelta, timezone
 #from config import get_config
+import numpy as np
+from dash import html
+import xml.etree.ElementTree as ET
+import plotly.express as px
+import pandas as pd
+import dash_bootstrap_components as dbc
+import pymysql.cursors
+from app import app
+from datetime import date
+from operator import add
 
 
 def get_config():
@@ -51,7 +48,7 @@ colors = {
     }
 
 
-def bar_plot(index, extraparam, name, className, y):  #extraparam is the data interval to get data
+def bar_plot(index, extraparam, name, className, y):
     x= np.arange(1000)
     return dcc.Graph(
         id={"type":"bar","index":str(index)},
@@ -69,61 +66,27 @@ def bar_plot(index, extraparam, name, className, y):  #extraparam is the data in
                 },
 		'xaxis': {
 		'title': "channels"
-		}
+		},
+                'font': {
+                    'color': colors['text']
+                }
             }
         }
     )
 
-def line_plot(index, extraparam, name, className, y): #extraparam is the data interval to get data
-    x=pd.date_range(start='1/1/2018', periods=8)
+def line_plot(index, extraparam, name, className, y):
+    x=np.arange(300)
     return dcc.Graph(
         id={"type":"line","index":str(index)},
         className=className,
         figure= {
             'data': [dict(
                 x=x,
-                y=np.arange(8),
-                error_y=dict(type='data', array=np.arange(8)),
+                y=y,
+                error_y=dict(type='data', array=np.arange(300)),
                 mode='markers', customdata=extraparam
-            )],
-            "layout": {"title": {"text": ""}, 'xaxis': {
-		'title': "Date"
-		},
-        'yaxis': {
-		'title': "Counts"
-		}}
-            
-        }
-        )
-
-def plot_image(index, name, className, extraparam): #extraparam is the directory where the images are stored
-
-    list_of_files = glob.glob(f'{extraparam}/*.jpg') # * means all if need specific format then *.csv
-    latest_file = max(list_of_files, key=os.path.getctime)
-
-    print(latest_file)
-    
-    img = io.imread(latest_file)
-    fig = px.imshow(img, title=latest_file)
-    
-    return dcc.Graph(
-        id={"type":"image","index":str(index)},
-        figure = fig,
-    )
-
-
-def plot_image_json(index, name, className):
-
-    latest_file = load_image_json()
-    
-    
-    img = io.imread(latest_file)
-    fig = px.imshow(img, title=latest_file)
-    
-    return dcc.Graph(
-        id={"type":"image","index":str(index)},
-        figure = fig,
-    )
+            )]
+        })
 
 
 def load_bar(instrument_barid, pasttime=30):
@@ -213,28 +176,6 @@ def load_line(instrument_lineid, pasttime=30):
 
     return results_line
 
-def load_image_json():
-    
-    conn = pymysql.connect(host=conf_dict["db_host"], user=conf_dict["db_user"], password=conf_dict["db_pass"], db=conf_dict["db_results"],port=int(conf_dict["db_port"]), cursorclass=pymysql.cursors.DictCursor)
-    cursor = conn.cursor()
-
-    time_slot = (datetime.now(timezone.utc)).strftime("%Y-%m-%d %H:%M:%S")
-    
-    query = f"select * from gammaflash_test.images order by insert_time desc limit 1;"
-    #print(query)
-    #Get line data
-    cursor.execute(query)
-
-    results = cursor.fetchall()
-
-    res = json.loads(results[0]["data"])
-
-    image = res["image"]
-
-    return image
-
-
-
 def load_view(mysql=True):
 
     if mysql:
@@ -274,7 +215,7 @@ def load_view(mysql=True):
     row_list = []
 
     for view in views_xml_root.iter('view'):
-        if(view.attrib['name']=="view1"):
+        if(view.attrib['name']=="archive_view"):
             for row in view.iter('row'):
                 row_id = row.attrib['id']
                 cols = []
@@ -307,31 +248,20 @@ def start_view(rows):
     ####------ preparing plots----######
     div_children = []
     count = 0
+
     for i in rows:
         row_plot = []
-        #row_plot.append(html.Button(id='123', n_clicks=0))
         for j in i["row_columns"]:
             if j["graph_type"] == "histogram":
                 #plot = 0
                 plot = bar_plot(index=j["graph_id"], extraparam=j["extraparam"], name=j["graph_name"], className=j["col_class"], y=np.zeros((1000,), dtype=int))
-                interval = dcc.Interval(id={"type":"interval","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
-                intervals.append(interval)
+                #interval = dcc.Interval(id={"type":"interval","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
+                #intervals.append(interval)
 
             if j["graph_type"] == "line":
                 plot = line_plot(index=j["graph_id"], extraparam=j["extraparam"], name=j["graph_name"], className=j["col_class"], y=0)
-                interval = dcc.Interval(id={"type":"interval-line","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
-                intervals.append(interval)
-            
-            if j["graph_type"] == "image":
-                plot = plot_image(index=j["graph_id"], name=j["graph_name"], className=j["col_class"], extraparam=j["extraparam"])
-                interval = dcc.Interval(id={"type":"interval-image","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
-                intervals.append(interval)
-
-            if j["graph_type"] == "image-json":
-                plot = plot_image_json(index=j["graph_id"], name=j["graph_name"], className=j["col_class"])
-                interval = dcc.Interval(id={"type":"interval-image-json","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
-                intervals.append(interval)
-
+                #interval = dcc.Interval(id={"type":"interval-line","index":j["graph_id"]}, interval=int(j['graph_interval'])*1000, n_intervals=0,)
+                #intervals.append(interval)
             count += 1
             row_plot.append(plot)
 
@@ -344,12 +274,14 @@ def start_view(rows):
 rows = load_view(mysql=False)
 intervals = []
 
+datepicker = dcc.DatePickerRange(id='my-date-picker-range', initial_visible_month=date(2022, 6, 1))
+
 
 div_children = start_view(rows)
 #print(intervals)
 
 
-layout = html.Div( children=[
+layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 
 
     html.Div(children=[
@@ -363,19 +295,39 @@ layout = html.Div( children=[
     ], style={
             "margin-bottom": "50px"
         }),
+    
 
-    html.Div(id="view1", children=div_children),
+    html.Div(id="datepicker", children=datepicker),
 
-    html.Div(id="interval_container", children=intervals)
+    html.Div(id="view1", children=div_children)
+
 
 
 ])
 
+
+
+"""
 ################---CALLBACKS---##############
+@app.callback(
+    [Output({"type":"bar", "index": ALL}, "figure"),
+    Output({"type":"line", "index": ALL}, "figure")],
+    [Input('my-date-picker-range', 'start_date'),
+    Input('my-date-picker-range', 'end_date')]
+    )
+def update_bars(start_date, end_date, bar_figure, barid, line_figure, lineid):
+
+    if start_date and end_date is not None:
+        print(f"callback! {start_date} {end_date} {barid} {lineid}")
+
+    return bar_figure, line_figure
+
+
 
 @app.callback(
     Output({"type":"bar", "index": MATCH}, "figure"),
-    [Input({"type":"interval",'index': MATCH}, 'n_intervals')],
+    [Input('my-date-picker-range', 'start_date'),
+    Input('my-date-picker-range', 'end_date'))],
     [State({'type': 'bar', 'index': MATCH}, 'figure'),
     State({'type': 'bar', 'index': MATCH}, 'id')]
     )
@@ -385,7 +337,6 @@ def update_bars(n, figure_bar, barid):
 
     figure_bar["data"][0]["x"] = bars["x"]
     figure_bar["data"][0]["y"] = bars["y"]
-    figure_bar["layout"]["title"] = bars["title"]
     #print(figure_bar)
 
     return figure_bar
@@ -399,54 +350,15 @@ def update_bars(n, figure_bar, barid):
     )
 def update_lines(n, figure_line, lineid):
 
+
+    #print(figure_line, lineid)
+    
     lines = load_line(lineid["index"], pasttime=int(figure_line["data"][0]["customdata"]))
     figure_line["data"][0]["x"] = lines["x"]
     figure_line["data"][0]["y"] = lines["y"]
     figure_line["data"][0]["error_y"]["array"] = lines["y_err"]
-    figure_line["layout"]["title"]["text"] = lines["title"]
-    figure_line["layout"]["xaxis"]["title"]["text"] = lines["xlabel"]
-    figure_line["layout"]["yaxis"]["title"]["text"] = lines["ylabel"]
-    print(figure_line["layout"])
+    print(figure_line["data"][0]["customdata"])
+    #print(figure_line)
     return figure_line
 
-
-@app.callback(
-    Output({"type":"image", "index": MATCH}, "figure"),
-    [Input({"type":"interval-image",'index': MATCH}, 'n_intervals')],
-    [State({'type': 'image', 'index': MATCH}, 'figure'),
-    State({'type': 'image', 'index': MATCH}, 'id')]
-    )
-def update_image(n, figure_image, barid):
-    
-    #get the pathfile
-    pathfile = figure_image["layout"]["title"]["text"]
-    pathfile = Path(pathfile)
-    pathfile = pathfile.parent
-
-    print(pathfile)
-
-
-    list_of_files = glob.glob(f'{str(pathfile)}/*.jpg')
-    latest_file = max(list_of_files, key=os.path.getctime)
-
-    img = io.imread(latest_file)
-    fig = px.imshow(img, title=latest_file)
-
-
-    return fig
-
-@app.callback(
-    Output({"type":"image-json", "index": MATCH}, "figure"),
-    [Input({"type":"interval-image-json",'index': MATCH}, 'n_intervals')],
-    [State({'type': 'image-json', 'index': MATCH}, 'figure'),
-    State({'type': 'image-json', 'index': MATCH}, 'id')]
-    )
-def update_image(n, figure_image, barid):
-    
-    latest_file = load_image_json()
-
-    img = io.imread(latest_file)
-    fig = px.imshow(img)
-
-
-    return fig
+"""

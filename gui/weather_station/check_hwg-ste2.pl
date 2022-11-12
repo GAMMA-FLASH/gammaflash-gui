@@ -4,7 +4,7 @@
 # check_hwgroup.pl - checks the HW group Hwg-STE devices.
 # Copyright (C) 2010  NETWAYS GmbH, www.netways.de
 # Author: Michael Streb <michael.streb@netways.de>
-# Author: Bernd Löhlein <bernd.loehlein@netways.de>
+# Author: Bernd Lï¿½hlein <bernd.loehlein@netways.de>
 # Version: $Id: check_hwg-ste.pl 1558 2010-02-17 13:07:57Z mstreb $
 #
 # This program is free software; you can redistribute it and/or
@@ -248,11 +248,11 @@ else {
 	
 		# setting the output string
 		my $epoc = time();
-		$output .= "Time: ".$epoc.", ";
-		$output .= "Sensor: ".$response->{$oids[0]}.", ";
-		$output .= "State: ".$sensor_states{$response->{$oids[1]}}.", ";
-		$output .= "Value: ".$response->{$oids[2]};
-		$output .= ", $response->{$oids[0]}=".eval($response->{$oids[3]}/10).";";
+		$output .= "".$epoc.", ";
+		#$output .= "Sensor: ".$response->{$oids[0]}.", ";
+		#$output .= "State: ".$sensor_states{$response->{$oids[1]}}.", ";
+		$output .= "".$response->{$oids[2]};
+		#$output .= ", $response->{$oids[0]}=".eval($response->{$oids[3]}/10).";";
 
 		# append thresholds to perfdata if device is Poseidon
 		if ($device =~ m/Poseidon/i) {
@@ -424,7 +424,7 @@ $Id: check_hwg-ste.pl 1558 2010-02-17 13:07:57Z mstreb $
 
 NETWAYS GmbH, 2010, http://www.netways.de.
 
-Written by Michael Streb <michael.streb@netways.de>, Bernd Löhlein <bernd.loehlein@netways.de>
+Written by Michael Streb <michael.streb@netways.de>, Bernd Lï¿½hlein <bernd.loehlein@netways.de>
 
 Please report bugs through the contact of monitoringexchange, http://www.monitoringexchange.org. 
 

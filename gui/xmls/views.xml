@@ -1,26 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+extraparam:
+image -> directory where the images are stored
+histo_spectrum and curve_lc -> interval (minutes) to get data
+-->
 <views>
 <view name="view1">
+
+<row id="rowimage">
+  	
+	<col id="colimage" class="col-lg-12 col-md-8 col-sm-4 col-xs-8">
+            <graph id="boltek_image" name="image" interval="120" extraparam="/data/archive/boltek/"/>
+        </col>
+</row>
+
+<!--
+<row id="rowimage-json">
+  	
+	<col id="colimage-json" class="col-lg-12 col-md-8 col-sm-4 col-xs-8">
+            <graph id="boltek_image-json" name="image-json" interval="120" extraparam="/data/archive/boltek/"/>
+        </col>
+</row>
+-->
+
+<row id="row0">
+  	
+	<col id="col0_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg0" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col0_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg0" name="curve_lc" interval="5" extraparam="30"/>
+        </col>
+
+</row>
+
+<row id="row1">
+  	
+	<col id="col1_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg1" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col1_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg1" name="curve_lc" interval="5" extraparam="30"/>
+        </col>
+
+</row>
 
   <row id="row2">
   	
 	<col id="col2_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="histogram2" name="histo_gamma_flash" interval="5" redpitayaID="0"/>
+            <graph id="spectrum_rpg2" name="histo_spectrum" interval="5" extraparam="180"/>
         </col>
 
     <col id="col2_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="line2" name="curve_gamma_flash" interval="5" redpitayaID="0"/>
+            <graph id="lc_rpg2" name="curve_lc" interval="5" extraparam="180"/>
+        </col>
+</row>
+
+<row id="row3">
+  	
+	<col id="col3_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg3" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col3_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg3" name="curve_lc" interval="5" extraparam="30"/>
+        </col>
+</row>
+
+</view>
+
+
+<view name="archive_view">
+
+<row id="row0">
+  	
+	<col id="col0_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg0_view" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col0_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg0_view" name="curve_lc" interval="5" extraparam="30"/>
         </col>
 
 </row>
-  </view>
 
-  <view name="housekeeping_view">
-      <row id="housekeeping_row1">
+<row id="row1">
   	
-	    <col id="col1_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
-            <graph id="temp1" name="curve_gamma_flash" interval="5" redpitayaID="4"/>
-     </col>
-	</row>
-  </view>
+	<col id="col1_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg1_view" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col1_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg1_view" name="curve_lc" interval="5" extraparam="30"/>
+        </col>
+
+</row>
+
+  <row id="row2">
+  	
+	<col id="col2_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg2_view" name="histo_spectrum" interval="5" extraparam="180"/>
+        </col>
+
+    <col id="col2_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg2_view" name="curve_lc" interval="5" extraparam="180"/>
+        </col>
+</row>
+
+<row id="row3">
+  	
+	<col id="col3_1" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="spectrum_rpg3_view" name="histo_spectrum" interval="5" extraparam="30"/>
+        </col>
+
+    <col id="col3_2" class="col-lg-6 col-md-4 col-sm-4 col-xs-4">
+            <graph id="lc_rpg3_view" name="curve_lc" interval="5" extraparam="30"/>
+        </col>
+</row>
+
+</view>  
 </views>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <graphs>
-   <graph name="histo_gamma_flash" type="histogram" datatype="" field ="y_distribution" />
-   <graph name="curve_gamma_flash" type="line" datatype="" field ="" />
+   <graph name="histo_spectrum" type="histogram" datatype="" field ="" />
+   <graph name="curve_lc" type="line" datatype="" field ="" />
+   <graph name="curve_temp" type="line" datatype="" field ="" />
+   <graph name="image" type="image" datatype="" field ="" />
+   <graph name="image-json" type="image-json" datatype="" field ="" />
 </graphs>
